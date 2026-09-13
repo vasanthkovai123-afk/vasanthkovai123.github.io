@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI-Assisted ABAP Code Review — Vasanth</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@300;400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg:        #0C0F17;
+    --bg2:       #111624;
+    --bg3:       #181E2E;
+    --border:    rgba(255,255,255,0.07);
+    --border2:   rgba(255,255,255,0.14);
+    --blue:      #3B82F6;
+    --blue-dim:  #1D4ED8;
+    --teal:      #14B8A6;
+    --amber:     #F59E0B;
+    --red:       #F04747;
+    --text:      #E8EDF5;
+    --text2:     #8A97B0;
+    --text3:     #4F5E7B;
+    --serif:     'DM Serif Display', Georgia, serif;
+    --sans:      'Inter', system-ui, sans-serif;
+    --mono:      'JetBrains Mono', 'Courier New', monospace;
+    --radius:    6px;
+    --radius-lg: 12px;
+  }
+
+  body {
+    background: var(--bg); color: var(--text);
+    font-family: var(--sans); font-size: 16px; line-height: 1.6; font-weight: 300;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    background: rgba(12,15,23,0.85); backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 2rem; display: flex; align-items: center; justify-content: space-between; height: 56px;
+  }
+  .nav-back { display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--text2); text-decoration: none; transition: color 0.2s; }
+  .nav-back:hover { color: var(--text); }
+  .nav-name { font-family: var(--serif); font-size: 16px; color: var(--text); }
+
+  .wrap { max-width: 920px; margin: 0 auto; padding: 100px 2rem 80px; }
+
+  .tool-header { margin-bottom: 40px; }
+  .tool-eyebrow {
+    font-size: 12px; font-weight: 500; letter-spacing: 0.14em; color: var(--blue);
+    text-transform: uppercase; margin-bottom: 16px; display: flex; align-items: center; gap: 10px;
+  }
+  .tool-eyebrow::before { content: ''; display: block; width: 32px; height: 1px; background: var(--blue); }
+  .tool-title { font-family: var(--serif); font-size: clamp(1.9rem, 4vw, 2.6rem); color: var(--text); margin-bottom: 16px; line-height: 1.2; }
+  .tool-desc { font-size: 16px; color: var(--text2); max-width: 620px; line-height: 1.7; }
+
+  .demo-notice {
+    background: rgba(59,130,246,0.06); border: 1px solid rgba(59,130,246,0.2);
+    border-radius: var(--radius); padding: 14px 18px; margin-top: 24px;
+    font-size: 13px; color: var(--blue); line-height: 1.6; display: flex; gap: 10px; align-items: flex-start;
+  }
+  .demo-notice-icon { flex-shrink: 0; margin-top: 1px; }
+
+  /* Scenario selector */
+  .scenario-section { margin: 48px 0 32px; }
+  .scenario-label { font-size: 12px; font-weight: 500; letter-spacing: 0.08em; color: var(--text3); text-transform: uppercase; margin-bottom: 16px; }
+  .scenario-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .scenario-card {
+    background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius-lg);
+    padding: 20px; cursor: pointer; transition: all 0.2s; text-align: left;
+    font-family: var(--sans); color: var(--text);
+  }
+  .scenario-card:hover { border-color: var(--border2); }
+  .scenario-card.active { border-color: var(--blue); background: rgba(59,130,246,0.06); }
+  .scenario-obj { font-family: var(--mono); font-size: 12px; color: var(--blue); margin-bottom: 10px; }
+  .scenario-name { font-size: 14px; font-weight: 500; margin-bottom: 6px; }
+  .scenario-hint { font-size: 12px; color: var(--text3); line-height: 1.5; }
+
+  /* Code panel */
+  .code-panel {
+    background: #0A0D14; border: 1px solid var(--border); border-radius: var(--radius-lg);
+    overflow: hidden; margin-bottom: 24px;
+  }
+  .code-panel-header {
+    padding: 12px 18px; border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+    background: var(--bg2);
+  }
+  .code-panel-title { font-size: 12px; color: var(--text2); font-family: var(--mono); }
+  .code-dots { display: flex; gap: 6px; }
+  .code-dot { width: 9px; height: 9px; border-radius: 50%; background: var(--border2); }
+  pre.code-body {
+    padding: 20px 24px; font-family: var(--mono); font-size: 12.5px; line-height: 1.7;
+    color: #B8C4DB; overflow-x: auto; white-space: pre;
+  }
+  .code-body .kw { color: #6FA8F5; }
+  .code-body .cm { color: #4F5E7B; font-style: italic; }
+  .code-body .str { color: #90D4C0; }
+  .code-body .hl { background: rgba(240,71,71,0.15); display: inline-block; width: 100%; }
+
+  .run-btn-row { display: flex; justify-content: center; margin-bottom: 40px; }
+  .run-btn {
+    background: var(--blue); color: #fff; border: none; padding: 13px 32px;
+    border-radius: var(--radius); font-size: 14px; font-weight: 500; cursor: pointer;
+    font-family: var(--sans); display: flex; align-items: center; gap: 10px;
+    transition: background 0.2s;
+  }
+  .run-btn:hover { background: var(--blue-dim); }
+  .run-btn:disabled { opacity: 0.5; cursor: default; }
+  .spinner {
+    width: 14px; height: 14px; border: 2px solid rgba(255,255,255,0.3);
+    border-top-color: #fff; border-radius: 50%; animation: spin 0.7s linear infinite; display: none;
+  }
+  .spinner.active { display: inline-block; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* Results */
+  .results { display: none; }
+  .results.active { display: block; animation: fadeIn 0.4s ease; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+  .verdict-banner {
+    border-radius: var(--radius-lg); padding: 20px 24px; margin-bottom: 24px;
+    display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;
+  }
+  .verdict-reject { background: rgba(240,71,71,0.08); border: 1px solid rgba(240,71,71,0.25); }
+  .verdict-conditions { background: rgba(245,158,11,0.08); border: 1px solid rgba(245,158,11,0.25); }
+  .verdict-approve { background: rgba(20,184,166,0.08); border: 1px solid rgba(20,184,166,0.25); }
+  .verdict-left { display: flex; align-items: center; gap: 14px; }
+  .verdict-icon { font-size: 22px; }
+  .verdict-title { font-size: 16px; font-weight: 500; }
+  .verdict-reject .verdict-title { color: var(--red); }
+  .verdict-conditions .verdict-title { color: var(--amber); }
+  .verdict-approve .verdict-title { color: var(--teal); }
+  .verdict-sub { font-size: 12px; color: var(--text3); margin-top: 2px; }
+
+  .stat-row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-bottom: 28px; }
+  .stat-box { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 10px; text-align: center; }
+  .stat-val { font-family: var(--serif); font-size: 1.5rem; }
+  .stat-lbl { font-size: 10px; color: var(--text3); margin-top: 4px; letter-spacing: 0.02em; }
+
+  .findings-group { margin-bottom: 28px; }
+  .findings-header { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+  .findings-tag { font-size: 11px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; padding: 3px 10px; border-radius: 20px; }
+  .tag-p1 { background: rgba(240,71,71,0.12); color: var(--red); }
+  .tag-p2 { background: rgba(245,158,11,0.12); color: var(--amber); }
+  .tag-p3 { background: rgba(59,130,246,0.12); color: var(--blue); }
+
+  .finding-card {
+    background: var(--bg2); border: 1px solid var(--border); border-left: 3px solid var(--border2);
+    border-radius: var(--radius); padding: 16px 18px; margin-bottom: 10px;
+  }
+  .finding-card.sev-p1 { border-left-color: var(--red); }
+  .finding-card.sev-p2 { border-left-color: var(--amber); }
+  .finding-card.sev-p3 { border-left-color: var(--blue); }
+  .finding-title { font-size: 14px; font-weight: 500; color: var(--text); margin-bottom: 6px; }
+  .finding-loc { font-family: var(--mono); font-size: 11px; color: var(--text3); margin-bottom: 10px; }
+  .finding-desc { font-size: 13px; color: var(--text2); line-height: 1.6; margin-bottom: 10px; }
+  .finding-fix {
+    background: #0A0D14; border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 10px 14px; font-family: var(--mono); font-size: 12px; color: var(--teal); line-height: 1.6;
+  }
+  .finding-fix-label { font-size: 10px; color: var(--text3); font-family: var(--sans); margin-bottom: 6px; letter-spacing: 0.04em; }
+
+  .positives-box {
+    background: rgba(20,184,166,0.06); border: 1px solid rgba(20,184,166,0.2);
+    border-radius: var(--radius-lg); padding: 18px 20px; margin-top: 8px;
+  }
+  .positives-title { font-size: 12px; font-weight: 500; color: var(--teal); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 10px; }
+  .positive-line { font-size: 13px; color: var(--text2); margin-bottom: 6px; line-height: 1.5; }
+  .positive-line:last-child { margin-bottom: 0; }
+
+  .back-link {
+    display: inline-flex; align-items: center; gap: 8px; margin-top: 48px;
+    font-size: 13px; color: var(--text2); text-decoration: none; transition: color 0.2s;
+  }
+  .back-link:hover { color: var(--text); }
+
+  @media (max-width: 720px) {
+    .scenario-grid { grid-template-columns: 1fr; }
+    .stat-row { grid-template-columns: repeat(2, 1fr); }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-back">← Portfolio</a>
+  <span class="nav-name">Vasanth</span>
+</nav>
+
+<div class="wrap">
+
+  <div class="tool-header">
+    <div class="tool-eyebrow">Live tool · Guided demo</div>
+    <h1 class="tool-title">AI-Assisted ABAP Code Review</h1>
+    <p class="tool-desc">A pre-transport quality gate that reviews ABAP code across performance, logic, security, and S/4HANA compliance — built to stop defects at the developer's desk instead of six months into UAT.</p>
+    <div class="demo-notice">
+      <span class="demo-notice-icon">ⓘ</span>
+      <span>This is a guided demo running against three real ABAP scenarios with pre-computed review output — built this way so you can see genuine findings without needing API access. The production version runs live against any transport via the Claude API. Pick a scenario below and run the review.</span>
+    </div>
+  </div>
+
+  <div class="scenario-section">
+    <div class="scenario-label">Choose a scenario</div>
+    <div class="scenario-grid">
+      <button class="scenario-card active" onclick="selectScenario('pricing')" id="card-pricing">
+        <div class="scenario-obj">ZCL_SD_PRICING</div>
+        <div class="scenario-name">Pricing rebate calculation</div>
+        <div class="scenario-hint">SELECT inside loop + missing error handling</div>
+      </button>
+      <button class="scenario-card" onclick="selectScenario('migration')" id="card-migration">
+        <div class="scenario-obj">/EBOS/BD_MIGRATE_VENDOR</div>
+        <div class="scenario-name">Vendor master migration</div>
+        <div class="scenario-hint">Hardcoded values + no BAL logging</div>
+      </button>
+      <button class="scenario-card" onclick="selectScenario('clean')" id="card-clean">
+        <div class="scenario-obj">ZFM_GET_ORDER_STATUS</div>
+        <div class="scenario-name">Order status lookup</div>
+        <div class="scenario-hint">Clean implementation — approved</div>
+      </button>
+    </div>
+  </div>
+
+  <div class="code-panel">
+    <div class="code-panel-header">
+      <span class="code-panel-title" id="code-title">ZCL_SD_PRICING → CALC_REBATE</span>
+      <div class="code-dots"><span class="code-dot"></span><span class="code-dot"></span><span class="code-dot"></span></div>
+    </div>
+    <pre class="code-body" id="code-body"></pre>
+  </div>
+
+  <div class="run-btn-row">
+    <button class="run-btn" onclick="runReview()" id="run-btn">
+      <span class="spinner" id="spinner"></span>
+      <span id="run-btn-text">Run AI review</span>
+    </button>
+  </div>
+
+  <div class="results" id="results"></div>
+
+  <a href="index.html" class="back-link">← Back to portfolio</a>
+
+</div>
+
+<script>
+const scenarios = {
+  pricing: {
+    title: "ZCL_SD_PRICING → CALC_REBATE",
+    code: `METHOD calc_rebate.
+  DATA: lt_conditions TYPE TABLE OF konv,
+        ls_condition  TYPE konv,
+        lv_total      TYPE kwert.
+
+  LOOP AT it_order_items INTO DATA(ls_item).
+    <span class="hl">    SELECT * FROM konv INTO TABLE lt_conditions
+      WHERE knumv = ls_item-knumv.</span>
+    LOOP AT lt_conditions INTO ls_condition.
+      lv_total = lv_total + ls_condition-kwert.
+    ENDLOOP.
+  ENDLOOP.
+
+  CALL FUNCTION 'ZFM_APPLY_HEALTHCARE_REBATE'
+    EXPORTING
+      iv_amount = lv_total
+    IMPORTING
+      ev_result = rv_rebate.
+
+  <span class="cm">" no sy-subrc check after FM call</span>
+
+ENDMETHOD.`,
+    verdict: "reject",
+    verdictLabel: "REJECT",
+    verdictSub: "ZCL_SD_PRICING · CALC_REBATE · Transport EBDK901234",
+    stats: [
+      { val: "3", lbl: "Critical (P1)", color: "var(--red)" },
+      { val: "1", lbl: "High (P2)", color: "var(--amber)" },
+      { val: "1", lbl: "Medium (P3)", color: "var(--blue)" },
+      { val: "3.5h", lbl: "Fix estimate", color: "var(--text)" },
+      { val: "HIGH", lbl: "ATC risk", color: "var(--red)" }
+    ],
+    findings: {
+      p1: [
+        {
+          title: "SELECT inside LOOP — N+1 database access pattern",
+          loc: "Line 6-7, inside LOOP AT it_order_items",
+          desc: "A SELECT against KONV runs once per order item instead of once for the full set. On a healthcare order with 200+ line items, this generates 200+ individual database round trips instead of one.",
+          fix: "Replace with a single SELECT ... FOR ALL ENTRIES IN it_order_items before the loop, or refactor to a JOIN. Estimated performance gain: 15-40x on high-volume orders."
+        },
+        {
+          title: "SELECT * instead of field list",
+          loc: "Line 6, SELECT * FROM konv",
+          desc: "Pulling all fields from KONV when only KWERT is used downstream. Increases memory footprint and network payload for no benefit.",
+          fix: "SELECT kwert FROM konv INTO TABLE lt_conditions WHERE knumv = ..."
+        },
+        {
+          title: "No error handling after function module call",
+          loc: "Line 14, CALL FUNCTION 'ZFM_APPLY_HEALTHCARE_REBATE'",
+          desc: "sy-subrc is never checked after the FM call. If the rebate calculation fails silently, the order proceeds with an incorrect (likely zero) rebate applied — a pricing accuracy risk in a healthcare contract context.",
+          fix: "Add EXCEPTIONS handling on the CALL FUNCTION and raise a class-based exception or log to SLG1 (BAL) on failure. Do not allow silent failure on pricing-critical paths."
+        }
+      ],
+      p2: [
+        {
+          title: "Local variable used without CLEAR between loop iterations",
+          loc: "Line 9, lv_total accumulates without reset",
+          desc: "lv_total is declared once outside the loop and never cleared per order item — if this method is called for multiple items in a batch context, totals will incorrectly accumulate across calls.",
+          fix: "Move lv_total declaration inside the LOOP, or explicitly CLEAR lv_total at the top of each iteration."
+        }
+      ],
+      p3: [
+        {
+          title: "Magic number risk — no named constant for rebate threshold",
+          loc: "Referenced in downstream FM, not visible in this method",
+          desc: "The healthcare rebate threshold appears to be hardcoded in the called FM rather than a maintainable constant or customizing table entry.",
+          fix: "Recommend reviewing ZFM_APPLY_HEALTHCARE_REBATE separately for a customizing-table-driven threshold instead of a hardcoded value."
+        }
+      ]
+    },
+    positives: [
+      "Method signature and naming follow EBOS ABAP conventions consistently",
+      "Use of DATA(ls_item) inline declaration is appropriate for the ABAP release in use"
+    ]
+  },
+
+  migration: {
+    title: "/EBOS/BD_MIGRATE_VENDOR → EXECUTE",
+    code: `REPORT /ebos/bd_migrate_vendor.
+
+DATA: lv_client TYPE sy-mandt VALUE '100'.
+<span class="cm">" hardcoded client - will break in QA/PROD</span>
+
+START-OF-SELECTION.
+  SELECT * FROM lfa1 INTO TABLE @DATA(lt_vendors)
+    WHERE mandt = @lv_client.
+
+  LOOP AT lt_vendors INTO DATA(ls_vendor).
+    TRY.
+        CALL METHOD zcl_vendor_migrate=>process( ls_vendor ).
+      CATCH cx_root.
+<span class="hl">        " empty catch block - error swallowed silently</span>
+    ENDTRY.
+  ENDLOOP.
+
+  COMMIT WORK.
+  WRITE: / 'Migration complete'.`,
+    verdict: "reject",
+    verdictLabel: "REJECT",
+    verdictSub: "/EBOS/BD_MIGRATE_VENDOR · Transport EBDK901187",
+    stats: [
+      { val: "2", lbl: "Critical (P1)", color: "var(--red)" },
+      { val: "2", lbl: "High (P2)", color: "var(--amber)" },
+      { val: "0", lbl: "Medium (P3)", color: "var(--blue)" },
+      { val: "2h", lbl: "Fix estimate", color: "var(--text)" },
+      { val: "HIGH", lbl: "ATC risk", color: "var(--red)" }
+    ],
+    findings: {
+      p1: [
+        {
+          title: "Empty CATCH block silently swallows all exceptions",
+          loc: "Line 11, CATCH cx_root",
+          desc: "Every exception raised during vendor migration is caught and discarded with no logging, no counter, and no visibility. A failed migration for any vendor record produces zero trace — the report will report 'Migration complete' even if every single record failed.",
+          fix: "Log every caught exception to SLG1 (BAL) with the vendor number and error text. Maintain a running count of successes/failures and display both at the end, not just 'Migration complete'."
+        },
+        {
+          title: "Hardcoded client value",
+          loc: "Line 3, lv_client TYPE sy-mandt VALUE '100'",
+          desc: "The client is hardcoded to '100'. This program will silently do nothing useful — or worse, act on the wrong client's data — the moment it is transported to QA or Production with a different client number.",
+          fix: "Remove the hardcoded value entirely. If cross-client access is genuinely required, use sy-mandt dynamically or make it a selection-screen parameter with client-check authorization."
+        }
+      ],
+      p2: [
+        {
+          title: "SELECT * on LFA1 without field restriction",
+          loc: "Line 6, SELECT * FROM lfa1",
+          desc: "Vendor master table LFA1 has 80+ fields. Pulling all of them for a migration program that likely only needs a subset increases memory usage unnecessarily on what could be a large vendor dataset.",
+          fix: "Restrict to the specific fields consumed by zcl_vendor_migrate=>process(). Confirm the required field list with the migration method's interface."
+        },
+        {
+          title: "No dry-run or rollback capability",
+          loc: "Line 16, COMMIT WORK with no prior validation step",
+          desc: "The program commits immediately after processing with no option to preview changes or roll back a partial migration. For a data migration program specifically, this is a high-risk pattern given the project's history of expensive re-run trial migrations.",
+          fix: "Add a 'test run' selection screen parameter that processes and reports without COMMIT WORK. Require explicit confirmation before the live run commits."
+        }
+      ],
+      p3: []
+    },
+    positives: [
+      "TRY/CATCH structure correctly wraps the risky migration call — the exception handling logic just needs to actually do something with the exception"
+    ]
+  },
+
+  clean: {
+    title: "ZFM_GET_ORDER_STATUS → Function Module",
+    code: `FUNCTION zfm_get_order_status.
+*"----------------------------------------------------------------
+*"*"Local interface:
+*"  IMPORTING VALUE(IV_VBELN) TYPE VBELN
+*"  EXPORTING VALUE(EV_STATUS) TYPE STATUS_TEXT
+*"  EXCEPTIONS ORDER_NOT_FOUND
+*"----------------------------------------------------------------
+
+  SELECT SINGLE gbstk FROM vbuk
+    INTO @DATA(lv_status)
+    WHERE vbeln = @iv_vbeln.
+
+  IF sy-subrc <> 0.
+    RAISE order_not_found.
+  ENDIF.
+
+  ev_status = COND #(
+    WHEN lv_status = 'C' THEN 'Completed'
+    WHEN lv_status = 'B' THEN 'Partially Processed'
+    ELSE 'Open' ).
+
+ENDFUNCTION.`,
+    verdict: "approve",
+    verdictLabel: "APPROVE",
+    verdictSub: "ZFM_GET_ORDER_STATUS · Transport EBDK901298",
+    stats: [
+      { val: "0", lbl: "Critical (P1)", color: "var(--text)" },
+      { val: "0", lbl: "High (P2)", color: "var(--text)" },
+      { val: "1", lbl: "Medium (P3)", color: "var(--blue)" },
+      { val: "0.5h", lbl: "Fix estimate", color: "var(--text)" },
+      { val: "LOW", lbl: "ATC risk", color: "var(--teal)" }
+    ],
+    findings: {
+      p1: [],
+      p2: [],
+      p3: [
+        {
+          title: "Status code mapping uses inline literals rather than a constants interface",
+          loc: "Lines 14-16, COND # expression",
+          desc: "The 'C', 'B' status codes are readable in context here, but if this mapping is duplicated elsewhere in the codebase, a future change to VBUK status codes requires finding every occurrence.",
+          fix: "Consider extracting to a shared constants interface (e.g. ZIF_ORDER_STATUS) if this mapping is used in more than one place across the codebase."
+        }
+      ]
+    },
+    positives: [
+      "SELECT SINGLE with explicit field selection — correct pattern for a single-record lookup",
+      "sy-subrc checked immediately after the SELECT and handled via a proper RAISE, not silently ignored",
+      "Clean use of COND # for the status mapping — readable and maintainable",
+      "Function module interface is minimal and well-scoped to its single responsibility"
+    ]
+  }
+};
+
+let currentScenario = 'pricing';
+
+function selectScenario(key) {
+  currentScenario = key;
+  document.querySelectorAll('.scenario-card').forEach(c => c.classList.remove('active'));
+  document.getElementById('card-' + key).classList.add('active');
+  document.getElementById('code-title').textContent = scenarios[key].title;
+  document.getElementById('code-body').innerHTML = scenarios[key].code;
+  document.getElementById('results').classList.remove('active');
+  document.getElementById('results').innerHTML = '';
+  document.getElementById('run-btn-text').textContent = 'Run AI review';
+  document.getElementById('run-btn').disabled = false;
+}
+
+function runReview() {
+  const btn = document.getElementById('run-btn');
+  const spinner = document.getElementById('spinner');
+  const btnText = document.getElementById('run-btn-text');
+
+  btn.disabled = true;
+  spinner.classList.add('active');
+  btnText.textContent = 'Analysing code...';
+
+  setTimeout(() => {
+    spinner.classList.remove('active');
+    btnText.textContent = 'Review complete';
+    renderResults(scenarios[currentScenario]);
+  }, 1400);
+}
+
+function renderResults(s) {
+  const verdictClass = s.verdict === 'reject' ? 'verdict-reject' : s.verdict === 'approve' ? 'verdict-approve' : 'verdict-conditions';
+  const verdictIcon = s.verdict === 'reject' ? '✕' : s.verdict === 'approve' ? '✓' : '!';
+
+  let html = `
+    <div class="verdict-banner ${verdictClass}">
+      <div class="verdict-left">
+        <span class="verdict-icon">${verdictIcon}</span>
+        <div>
+          <div class="verdict-title">${s.verdictLabel}</div>
+          <div class="verdict-sub">${s.verdictSub}</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="stat-row">
+      ${s.stats.map(st => `
+        <div class="stat-box">
+          <div class="stat-val" style="color:${st.color}">${st.val}</div>
+          <div class="stat-lbl">${st.lbl}</div>
+        </div>
+      `).join('')}
+    </div>
+  `;
+
+  if (s.findings.p1.length) {
+    html += `<div class="findings-group">
+      <div class="findings-header"><span class="findings-tag tag-p1">P1 Critical</span></div>
+      ${s.findings.p1.map(f => findingCard(f, 'p1')).join('')}
+    </div>`;
+  }
+  if (s.findings.p2.length) {
+    html += `<div class="findings-group">
+      <div class="findings-header"><span class="findings-tag tag-p2">P2 High</span></div>
+      ${s.findings.p2.map(f => findingCard(f, 'p2')).join('')}
+    </div>`;
+  }
+  if (s.findings.p3.length) {
+    html += `<div class="findings-group">
+      <div class="findings-header"><span class="findings-tag tag-p3">P3 Medium</span></div>
+      ${s.findings.p3.map(f => findingCard(f, 'p3')).join('')}
+    </div>`;
+  }
+
+  if (s.positives.length) {
+    html += `<div class="positives-box">
+      <div class="positives-title">Positives</div>
+      ${s.positives.map(p => `<div class="positive-line">✓ ${p}</div>`).join('')}
+    </div>`;
+  }
+
+  document.getElementById('results').innerHTML = html;
+  document.getElementById('results').classList.add('active');
+  document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function findingCard(f, sev) {
+  return `
+    <div class="finding-card sev-${sev}">
+      <div class="finding-title">${f.title}</div>
+      <div class="finding-loc">${f.loc}</div>
+      <div class="finding-desc">${f.desc}</div>
+      <div class="finding-fix">
+        <div class="finding-fix-label">RECOMMENDED FIX</div>
+        ${f.fix}
+      </div>
+    </div>
+  `;
+}
+
+// Initialize
+selectScenario('pricing');
+</script>
+</body>
+</html>
