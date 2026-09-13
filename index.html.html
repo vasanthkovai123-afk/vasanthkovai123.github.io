@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vasanth — Enterprise AI & SAP Platform Leadership</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg:        #0C0F17;
+    --bg2:       #111624;
+    --bg3:       #181E2E;
+    --border:    rgba(255,255,255,0.07);
+    --border2:   rgba(255,255,255,0.14);
+    --blue:      #3B82F6;
+    --blue-dim:  #1D4ED8;
+    --blue-glow: rgba(59,130,246,0.12);
+    --teal:      #14B8A6;
+    --amber:     #F59E0B;
+    --text:      #E8EDF5;
+    --text2:     #8A97B0;
+    --text3:     #4F5E7B;
+    --serif:     'DM Serif Display', Georgia, serif;
+    --sans:      'Inter', system-ui, sans-serif;
+    --radius:    6px;
+    --radius-lg: 12px;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: 16px;
+    line-height: 1.6;
+    font-weight: 300;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    background: rgba(12,15,23,0.85);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 2rem;
+    display: flex; align-items: center; justify-content: space-between;
+    height: 56px;
+  }
+  .nav-name { font-family: var(--serif); font-size: 18px; color: var(--text); letter-spacing: 0.01em; }
+  .nav-links { display: flex; gap: 2rem; }
+  .nav-links a { font-size: 13px; font-weight: 400; color: var(--text2); text-decoration: none; letter-spacing: 0.02em; transition: color 0.2s; }
+  .nav-links a:hover { color: var(--text); }
+
+  /* ── SECTIONS ── */
+  section { max-width: 900px; margin: 0 auto; padding: 0 2rem; }
+
+  /* ── HERO ── */
+  #hero {
+    min-height: 100vh;
+    display: flex; flex-direction: column; justify-content: center;
+    padding-top: 80px; padding-bottom: 60px;
+    max-width: 900px; margin: 0 auto; padding-left: 2rem; padding-right: 2rem;
+  }
+
+  .hero-label {
+    font-size: 12px; font-weight: 500; letter-spacing: 0.14em;
+    color: var(--blue); text-transform: uppercase; margin-bottom: 2rem;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .hero-label::before { content: ''; display: block; width: 32px; height: 1px; background: var(--blue); }
+
+  .hero-headline {
+    font-family: var(--serif);
+    font-size: clamp(2.4rem, 5vw, 3.8rem);
+    line-height: 1.15;
+    color: var(--text);
+    max-width: 760px;
+    margin-bottom: 2rem;
+  }
+  .hero-headline em {
+    font-style: italic;
+    color: var(--blue);
+  }
+
+  .hero-body {
+    font-size: 17px; line-height: 1.75; color: var(--text2);
+    max-width: 580px; margin-bottom: 3rem;
+  }
+
+  .hero-stats {
+    display: flex; gap: 3rem; margin-bottom: 3rem;
+    border-top: 1px solid var(--border); padding-top: 2rem;
+  }
+  .stat { }
+  .stat-number { font-family: var(--serif); font-size: 2rem; color: var(--text); line-height: 1; }
+  .stat-label { font-size: 12px; color: var(--text3); margin-top: 4px; letter-spacing: 0.04em; }
+
+  .hero-ctas { display: flex; gap: 12px; flex-wrap: wrap; }
+  .btn-primary {
+    background: var(--blue); color: #fff; border: none;
+    padding: 10px 22px; border-radius: var(--radius); font-size: 14px; font-weight: 500;
+    cursor: pointer; text-decoration: none; transition: background 0.2s;
+    font-family: var(--sans);
+  }
+  .btn-primary:hover { background: var(--blue-dim); }
+  .btn-ghost {
+    background: transparent; color: var(--text2);
+    border: 1px solid var(--border2);
+    padding: 10px 22px; border-radius: var(--radius); font-size: 14px; font-weight: 400;
+    cursor: pointer; text-decoration: none; transition: all 0.2s;
+    font-family: var(--sans);
+  }
+  .btn-ghost:hover { border-color: var(--blue); color: var(--text); }
+
+  /* ── SECTION HEADERS ── */
+  .section-wrap { padding: 80px 0; }
+  .section-header { margin-bottom: 48px; }
+  .section-eyebrow {
+    font-size: 11px; font-weight: 500; letter-spacing: 0.14em;
+    color: var(--blue); text-transform: uppercase; margin-bottom: 12px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .section-eyebrow::before { content: ''; display: block; width: 24px; height: 1px; background: var(--blue); }
+  .section-title {
+    font-family: var(--serif); font-size: clamp(1.8rem, 3vw, 2.4rem);
+    color: var(--text); line-height: 1.2;
+  }
+  .section-sub { font-size: 16px; color: var(--text2); margin-top: 12px; max-width: 520px; }
+
+  /* ── THESIS ── */
+  .thesis-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; }
+  .thesis-card {
+    background: var(--bg2); padding: 32px 28px;
+    position: relative;
+  }
+  .thesis-card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  }
+  .thesis-card:nth-child(1)::before { background: var(--blue); }
+  .thesis-card:nth-child(2)::before { background: var(--teal); }
+  .thesis-card:nth-child(3)::before { background: var(--amber); }
+  .thesis-num { font-family: var(--serif); font-size: 2.5rem; color: var(--border2); line-height: 1; margin-bottom: 16px; }
+  .thesis-statement { font-size: 15px; font-weight: 400; color: var(--text); line-height: 1.6; margin-bottom: 12px; }
+  .thesis-expand { font-size: 13px; color: var(--text3); line-height: 1.6; }
+
+  /* ── CAPABILITIES ── */
+  .capabilities-grid { display: grid; gap: 16px; }
+  .cap-card {
+    background: var(--bg2); border: 1px solid var(--border);
+    border-radius: var(--radius-lg); overflow: hidden;
+    transition: border-color 0.2s;
+  }
+  .cap-card:hover { border-color: var(--border2); }
+  .cap-header {
+    padding: 24px 28px 20px;
+    display: grid; grid-template-columns: 1fr auto; gap: 16px; align-items: start;
+  }
+  .cap-tag {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 11px; font-weight: 500; letter-spacing: 0.08em;
+    padding: 3px 10px; border-radius: 20px; margin-bottom: 10px;
+  }
+  .tag-live { background: rgba(20,184,166,0.12); color: var(--teal); }
+  .tag-framework { background: rgba(59,130,246,0.12); color: var(--blue); }
+  .tag-anonymised { background: rgba(245,158,11,0.12); color: var(--amber); }
+  .cap-dot { width: 6px; height: 6px; border-radius: 50%; margin-top: 2px; flex-shrink: 0; }
+  .dot-live { background: var(--teal); box-shadow: 0 0 6px var(--teal); }
+  .dot-fw { background: var(--blue); }
+  .dot-anon { background: var(--amber); }
+  .cap-title { font-family: var(--serif); font-size: 20px; color: var(--text); margin-bottom: 8px; }
+  .cap-desc { font-size: 14px; color: var(--text2); line-height: 1.65; max-width: 560px; }
+  .cap-meta {
+    padding: 16px 28px;
+    border-top: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+    background: rgba(255,255,255,0.02);
+  }
+  .cap-stack { display: flex; gap: 8px; flex-wrap: wrap; }
+  .stack-pill {
+    font-size: 11px; font-weight: 500; padding: 3px 8px;
+    border-radius: var(--radius); border: 1px solid var(--border2);
+    color: var(--text3); font-family: 'Courier New', monospace;
+  }
+  .cap-action {
+    font-size: 13px; color: var(--blue); font-weight: 500;
+    text-decoration: none; display: flex; align-items: center; gap: 6px;
+    white-space: nowrap; cursor: pointer; background: none; border: none; font-family: var(--sans);
+    transition: gap 0.2s;
+  }
+  .cap-action:hover { gap: 10px; }
+
+  /* ── CAREER ── */
+  .career-list { display: flex; flex-direction: column; }
+  .career-item {
+    display: grid; grid-template-columns: 140px 1fr;
+    gap: 32px; padding: 32px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .career-item:first-child { border-top: 1px solid var(--border); }
+  .career-period { font-size: 12px; color: var(--text3); padding-top: 4px; line-height: 1.5; }
+  .career-period strong { display: block; color: var(--text2); font-weight: 400; margin-bottom: 2px; }
+  .career-role { font-family: var(--serif); font-size: 18px; color: var(--text); margin-bottom: 4px; }
+  .career-org { font-size: 14px; color: var(--blue); margin-bottom: 12px; font-weight: 400; }
+  .career-impact { font-size: 14px; color: var(--text2); line-height: 1.7; }
+  .impact-pills { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 14px; }
+  .impact-pill {
+    font-size: 11px; font-weight: 400; padding: 3px 10px; border-radius: 20px;
+    background: var(--bg3); border: 1px solid var(--border); color: var(--text3);
+  }
+
+  /* ── BELIEFS / WRITING TEASER ── */
+  .writing-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .writing-card {
+    background: var(--bg2); border: 1px solid var(--border);
+    border-radius: var(--radius-lg); padding: 28px;
+    text-decoration: none; transition: border-color 0.2s; display: block;
+  }
+  .writing-card:hover { border-color: var(--border2); }
+  .writing-date { font-size: 11px; color: var(--text3); margin-bottom: 14px; letter-spacing: 0.04em; }
+  .writing-title { font-family: var(--serif); font-size: 18px; color: var(--text); line-height: 1.3; margin-bottom: 10px; }
+  .writing-excerpt { font-size: 13px; color: var(--text2); line-height: 1.65; }
+  .writing-link { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: var(--blue); margin-top: 18px; font-weight: 500; }
+
+  /* ── CONNECT ── */
+  .connect-wrap {
+    background: var(--bg2); border: 1px solid var(--border);
+    border-radius: var(--radius-lg); padding: 48px;
+    display: grid; grid-template-columns: 1fr auto; gap: 32px; align-items: center;
+  }
+  .connect-title { font-family: var(--serif); font-size: 1.8rem; color: var(--text); margin-bottom: 10px; }
+  .connect-body { font-size: 15px; color: var(--text2); line-height: 1.65; max-width: 460px; }
+  .connect-links { display: flex; flex-direction: column; gap: 12px; align-items: flex-end; }
+  .connect-link {
+    display: flex; align-items: center; gap: 10px;
+    font-size: 13px; color: var(--text2); text-decoration: none;
+    padding: 10px 16px; border: 1px solid var(--border);
+    border-radius: var(--radius); background: var(--bg);
+    transition: all 0.2s; white-space: nowrap;
+  }
+  .connect-link:hover { border-color: var(--blue); color: var(--text); }
+  .connect-icon { font-size: 15px; }
+
+  /* ── FOOTER ── */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 24px 2rem;
+    display: flex; justify-content: space-between; align-items: center;
+    max-width: 900px; margin: 0 auto;
+  }
+  .footer-text { font-size: 12px; color: var(--text3); }
+
+  /* ── DEMO MODAL ── */
+  .modal-overlay {
+    display: none; position: fixed; inset: 0; z-index: 200;
+    background: rgba(0,0,0,0.85); backdrop-filter: blur(8px);
+    align-items: center; justify-content: center; padding: 2rem;
+  }
+  .modal-overlay.active { display: flex; }
+  .modal {
+    background: var(--bg2); border: 1px solid var(--border2);
+    border-radius: var(--radius-lg); width: 100%; max-width: 820px;
+    max-height: 85vh; overflow-y: auto;
+  }
+  .modal-header {
+    padding: 20px 24px; border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0;
+    background: var(--bg2); z-index: 1;
+  }
+  .modal-title { font-family: var(--serif); font-size: 18px; color: var(--text); }
+  .modal-close {
+    background: none; border: 1px solid var(--border); color: var(--text2);
+    width: 30px; height: 30px; border-radius: var(--radius); cursor: pointer;
+    font-size: 16px; display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s; font-family: var(--sans);
+  }
+  .modal-close:hover { border-color: var(--border2); color: var(--text); }
+  .modal-body { padding: 28px 24px; }
+  .modal-desc { font-size: 14px; color: var(--text2); line-height: 1.7; margin-bottom: 24px; padding-bottom: 24px; border-bottom: 1px solid var(--border); }
+  .modal-section { margin-bottom: 20px; }
+  .modal-label { font-size: 11px; font-weight: 500; letter-spacing: 0.1em; color: var(--text3); text-transform: uppercase; margin-bottom: 10px; }
+  .modal-metric { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 20px; }
+  .metric-box { background: var(--bg3); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; }
+  .metric-val { font-family: var(--serif); font-size: 1.6rem; color: var(--text); }
+  .metric-lbl { font-size: 11px; color: var(--text3); margin-top: 4px; }
+  .capability-list { display: flex; flex-direction: column; gap: 10px; }
+  .cap-line { display: flex; align-items: flex-start; gap: 12px; font-size: 14px; color: var(--text2); line-height: 1.5; }
+  .cap-line::before { content: '→'; color: var(--blue); font-size: 13px; flex-shrink: 0; margin-top: 2px; }
+  .outcome-box { background: rgba(59,130,246,0.06); border: 1px solid rgba(59,130,246,0.2); border-radius: var(--radius); padding: 16px; margin-top: 16px; font-size: 13px; color: var(--blue); line-height: 1.6; }
+
+  @media (max-width: 680px) {
+    .thesis-grid { grid-template-columns: 1fr; }
+    .career-item { grid-template-columns: 1fr; gap: 8px; }
+    .writing-grid { grid-template-columns: 1fr; }
+    .connect-wrap { grid-template-columns: 1fr; }
+    .connect-links { align-items: flex-start; }
+    .hero-stats { gap: 1.5rem; flex-wrap: wrap; }
+    .modal-metric { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <span class="nav-name">Vasanth</span>
+  <div class="nav-links">
+    <a href="#thesis">Thinking</a>
+    <a href="#capabilities">Work</a>
+    <a href="#career">Career</a>
+    <a href="#writing">Writing</a>
+    <a href="#connect">Connect</a>
+  </div>
+</nav>
+
+<!-- ═══ HERO ═══ -->
+<section id="hero">
+  <div class="hero-label">Enterprise AI &amp; SAP Platform Leadership</div>
+  <h1 class="hero-headline">
+    Enterprise software is being rewired.<br>
+    I work at <em>that intersection.</em>
+  </h1>
+  <p class="hero-body">
+    25+ years delivering enterprise application programs across the US, India, Europe, and Asia-Pacific. 
+    Currently leading S/4HANA platform engineering and injecting AI-driven delivery discipline 
+    into one of ANZ's most complex pharmaceutical technology transformations.
+  </p>
+  <div class="hero-stats">
+    <div class="stat">
+      <div class="stat-number">25+</div>
+      <div class="stat-label">Years enterprise tech</div>
+    </div>
+    <div class="stat">
+      <div class="stat-number">4</div>
+      <div class="stat-label">Continents delivered</div>
+    </div>
+    <div class="stat">
+      <div class="stat-number">$1B+</div>
+      <div class="stat-label">Programs governed</div>
+    </div>
+    <div class="stat">
+      <div class="stat-number">ANZ</div>
+      <div class="stat-label">Current market</div>
+    </div>
+  </div>
+  <div class="hero-ctas">
+    <a href="#capabilities" class="btn-primary">See what I'm building</a>
+    <a href="#connect" class="btn-ghost">Let's connect</a>
+  </div>
+</section>
+
+<!-- ═══ THESIS ═══ -->
+<section>
+  <div class="section-wrap" id="thesis">
+    <div class="section-header">
+      <div class="section-eyebrow">What I believe</div>
+      <h2 class="section-title">Three things most organisations get wrong about enterprise AI</h2>
+    </div>
+    <div class="thesis-grid">
+      <div class="thesis-card">
+        <div class="thesis-num">01</div>
+        <div class="thesis-statement">The platform is the bottleneck, not the AI model.</div>
+        <div class="thesis-expand">Organisations spend months evaluating which LLM to use. The actual constraint is the quality, structure, and accessibility of the enterprise data underneath it. Fix the platform first.</div>
+      </div>
+      <div class="thesis-card">
+        <div class="thesis-num">02</div>
+        <div class="thesis-statement">AI in ERP delivery is already here — most programs just aren't using it.</div>
+        <div class="thesis-expand">Code quality gates, test scope recommendation, data migration intelligence — these aren't future capabilities. They can be built and deployed in weeks. The gap is awareness, not technology.</div>
+      </div>
+      <div class="thesis-card">
+        <div class="thesis-num">03</div>
+        <div class="thesis-statement">The next generation of CIOs will have shipped AI, not just sponsored it.</div>
+        <div class="thesis-expand">The executive credential that will matter in five years isn't "I oversaw an AI strategy." It's "I built AI into how my organisation works and measured the outcome." That requires being a practitioner, not a sponsor.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ CAPABILITIES ═══ -->
+<section>
+  <div class="section-wrap" id="capabilities">
+    <div class="section-header">
+      <div class="section-eyebrow">Active work</div>
+      <h2 class="section-title">What I'm building</h2>
+      <p class="section-sub">Tools and frameworks developed and deployed in active S/4HANA program delivery. Not prototypes — production thinking.</p>
+    </div>
+    <div class="capabilities-grid">
+
+      <div class="cap-card">
+        <div class="cap-header">
+          <div>
+            <div class="cap-tag tag-live"><span class="cap-dot dot-live"></span>Live tool</div>
+            <div class="cap-title">AI-Assisted ABAP Code Review</div>
+            <div class="cap-desc">A pre-transport quality gate that reviews ABAP code against performance, logic, security, and S/4HANA compliance rules — replacing a manual process that was pushing defects into UAT. Classifies findings as P1–P4 with specific fix instructions. Built in response to a real SI quality problem on an active program.</div>
+          </div>
+        </div>
+        <div class="cap-meta">
+          <div class="cap-stack">
+            <span class="stack-pill">Claude API</span>
+            <span class="stack-pill">ABAP</span>
+            <span class="stack-pill">S/4HANA</span>
+            <span class="stack-pill">Transport governance</span>
+          </div>
+          <a class="cap-action" href="abap_review_tool.html">Try the live demo →</a>
+        </div>
+      </div>
+
+      <div class="cap-card">
+        <div class="cap-header">
+          <div>
+            <div class="cap-tag tag-framework"><span class="cap-dot dot-fw"></span>Framework</div>
+            <div class="cap-title">AI-Driven Test Scope Engine</div>
+            <div class="cap-desc">A three-layer architecture that replaces commercial Smart Impact tooling — which failed after two PoC phases — with a custom AI classification engine. Maps transport objects to test cases using ABAP code semantics rather than pre-built SAP mappings. Accurate for custom Z* and /ORG/ objects where commercial tools produce noise.</div>
+          </div>
+        </div>
+        <div class="cap-meta">
+          <div class="cap-stack">
+            <span class="stack-pill">PyRFC</span>
+            <span class="stack-pill">Claude API</span>
+            <span class="stack-pill">Tosca integration</span>
+            <span class="stack-pill">Feedback loop</span>
+          </div>
+          <button class="cap-action" onclick="openModal('impact')">View architecture →</button>
+        </div>
+      </div>
+
+      <div class="cap-card">
+        <div class="cap-header">
+          <div>
+            <div class="cap-tag tag-anonymised"><span class="cap-dot dot-anon"></span>Anonymised</div>
+            <div class="cap-title">Vendor Contract Decision Framework</div>
+            <div class="cap-desc">A structured executive decision brief for evaluating and exiting underperforming technology contracts — built for a real $300K+ tooling decision on a major S/4HANA program. Covers capability assessment, PoC phasing methodology, root cause classification, and alternative tooling roadmap. Used to present to senior leadership.</div>
+          </div>
+        </div>
+        <div class="cap-meta">
+          <div class="cap-stack">
+            <span class="stack-pill">Executive comms</span>
+            <span class="stack-pill">Vendor governance</span>
+            <span class="stack-pill">PoC methodology</span>
+          </div>
+          <button class="cap-action" onclick="openModal('vendor')">View framework →</button>
+        </div>
+      </div>
+
+      <div class="cap-card">
+        <div class="cap-header">
+          <div>
+            <div class="cap-tag tag-anonymised"><span class="cap-dot dot-anon"></span>Anonymised</div>
+            <div class="cap-title">Platform Engineering Reporting System</div>
+            <div class="cap-desc">A weekly executive status pack architecture covering application health, commercial consumption (cloud and BTP), and risk/issue swim lanes across concurrent workstreams. Designed to give a GM-level view of platform state in under 5 minutes. Built for an environment with no structured KPI framework — establishes one.</div>
+          </div>
+        </div>
+        <div class="cap-meta">
+          <div class="cap-stack">
+            <span class="stack-pill">RAG reporting</span>
+            <span class="stack-pill">Azure cost mgmt</span>
+            <span class="stack-pill">Risk governance</span>
+          </div>
+          <button class="cap-action" onclick="openModal('reporting')">View structure →</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══ CAREER ═══ -->
+<section>
+  <div class="section-wrap" id="career">
+    <div class="section-header">
+      <div class="section-eyebrow">Career arc</div>
+      <h2 class="section-title">Impact, not duties</h2>
+    </div>
+    <div class="career-list">
+      <div class="career-item">
+        <div class="career-period">
+          <strong>2026 — present</strong>
+          Melbourne, AU
+        </div>
+        <div>
+          <div class="career-role">Head of S/4HANA Platform Engineering</div>
+          <div class="career-org">EBOS Group Limited — ASX/NZX listed, ANZ Pharma &amp; Healthcare</div>
+          <div class="career-impact">End-to-end engineering ownership of Project Horizon — one of the largest S/4HANA Healthcare implementations in ANZ. Responsible for design governance, SI management (Accenture), engineering quality standards, and the injection of AI-driven delivery practices. Program recovery context: establishing rigorous commercial governance on a T&M engagement and elevating testing maturity from the ground up.</div>
+          <div class="impact-pills">
+            <span class="impact-pill">Program recovery</span>
+            <span class="impact-pill">Accenture governance</span>
+            <span class="impact-pill">AI delivery tools</span>
+            <span class="impact-pill">T&M contract control</span>
+          </div>
+        </div>
+      </div>
+      <div class="career-item">
+        <div class="career-period">
+          <strong>2024 — 2026</strong>
+          Melbourne, AU
+        </div>
+        <div>
+          <div class="career-role">Head of SAP Platform</div>
+          <div class="career-org">EBOS Group Limited</div>
+          <div class="career-impact">Built and stabilised the SAP platform operating model across S/4HANA Live, SuccessFactors, and Integration. Established DevOps delivery model for BAU. Led TCS managed services transition — new target operating model, governance framework, and integrated delivery structure. Expanded scope to include SAP Integration Suite and SuccessFactors Uplift.</div>
+          <div class="impact-pills">
+            <span class="impact-pill">DevOps model</span>
+            <span class="impact-pill">Managed services transition</span>
+            <span class="impact-pill">SuccessFactors</span>
+            <span class="impact-pill">Integration governance</span>
+          </div>
+        </div>
+      </div>
+      <div class="career-item">
+        <div class="career-period">
+          <strong>Prior roles</strong>
+          US · India · Europe · APAC
+        </div>
+        <div>
+          <div class="career-role">Senior Enterprise Technology Leadership</div>
+          <div class="career-org">25+ years across SAP, ServiceNow, Data &amp; Integration</div>
+          <div class="career-impact">Career spanning enterprise applications portfolio management across pharma, retail, financial services, and public sector. Delivered programs ranging from mid-market implementations to large-scale transformations for global organisations. Consistent track record in IT outsourcing, vendor governance, and building high-performance delivery teams across four continents.</div>
+          <div class="impact-pills">
+            <span class="impact-pill">SAP</span>
+            <span class="impact-pill">ServiceNow</span>
+            <span class="impact-pill">US · India · Europe</span>
+            <span class="impact-pill">Pharma &amp; retail</span>
+            <span class="impact-pill">Vendor governance</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ WRITING ═══ -->
+<section>
+  <div class="section-wrap" id="writing">
+    <div class="section-header">
+      <div class="section-eyebrow">Thinking in public</div>
+      <h2 class="section-title">Recent writing</h2>
+      <p class="section-sub">Published on LinkedIn. On the evolution of ERP, AI in enterprise delivery, and what it looks like to be a practitioner at this intersection.</p>
+    </div>
+    <div class="writing-grid">
+      <a class="writing-card" href="https://linkedin.com/in/vasanth" target="_blank">
+        <div class="writing-date">In progress · ERP Evolution Series</div>
+        <div class="writing-title">The ERP market is fragmenting. Here's what that means for the next decade of enterprise software.</div>
+        <div class="writing-excerpt">Most CIOs are still running their technology strategy on assumptions that were formed in 2015. The market has changed underneath them.</div>
+        <div class="writing-link">Read on LinkedIn →</div>
+      </a>
+      <a class="writing-card" href="https://linkedin.com/in/vasanth" target="_blank">
+        <div class="writing-date">Practitioner take · AI in delivery</div>
+        <div class="writing-title">We cancelled a $300K testing tool contract and built the replacement in 6 weeks. Here's what we learned.</div>
+        <div class="writing-excerpt">Commercial tooling for SAP impact analysis failed two PoC phases. Root cause: product limitations with custom objects. What we built instead — and why it works better.</div>
+        <div class="writing-link">Read on LinkedIn →</div>
+      </a>
+      <a class="writing-card" href="https://linkedin.com/in/vasanth" target="_blank">
+        <div class="writing-date">Thesis · CIO trajectory</div>
+        <div class="writing-title">The next generation of CIOs won't come from IT strategy. They'll come from AI delivery.</div>
+        <div class="writing-excerpt">The executive credential that matters in five years isn't "I sponsored an AI initiative." It's "I shipped one, measured it, and scaled it." That requires a different kind of preparation.</div>
+        <div class="writing-link">Read on LinkedIn →</div>
+      </a>
+      <a class="writing-card" href="https://linkedin.com/in/vasanth" target="_blank">
+        <div class="writing-date">Practitioner take · S/4HANA</div>
+        <div class="writing-title">Why most S/4HANA implementations fail at testing — and the AI fix that takes 4 weeks to build.</div>
+        <div class="writing-excerpt">200+ UAT defects on a programme that's been running for years. The root cause is never what people think it is. And the solution is already available — most teams just aren't using it.</div>
+        <div class="writing-link">Read on LinkedIn →</div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ CONNECT ═══ -->
+<section>
+  <div class="section-wrap" id="connect">
+    <div class="connect-wrap">
+      <div>
+        <div class="connect-title">Let's talk enterprise AI.</div>
+        <div class="connect-body">If you're thinking about AI in ERP delivery, building an enterprise AI product, or looking for someone who operates at both the strategic and engineering level — I'm interested in the conversation.</div>
+      </div>
+      <div class="connect-links">
+        <a class="connect-link" href="https://linkedin.com/in/vasanth" target="_blank">
+          <span class="connect-icon">in</span> Connect on LinkedIn
+        </a>
+        <a class="connect-link" href="mailto:vasanth@email.com">
+          <span class="connect-icon">✉</span> Send an email
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <span class="footer-text">Vasanth — Enterprise AI &amp; SAP Platform Leadership</span>
+  <span class="footer-text">Melbourne, Australia</span>
+</footer>
+
+<!-- ═══ MODALS ═══ -->
+<div class="modal-overlay" id="modal-overlay" onclick="closeModalOnOverlay(event)">
+  <div class="modal" id="modal-content">
+    <div class="modal-header">
+      <span class="modal-title" id="modal-title"></span>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body" id="modal-body"></div>
+  </div>
+</div>
+
+<script>
+const modals = {
+  abap: {
+    title: "AI-Assisted ABAP Code Review — How it works",
+    body: `
+      <div class="modal-desc">A pre-transport quality gate that analyses ABAP code across six dimensions before it can move from Development to QA. Built to address a systemic pattern on a major S/4HANA implementation where SI code quality issues were being discovered in UAT — 6+ months into the test cycle — rather than at the developer's desk.</div>
+      <div class="modal-label">What it catches</div>
+      <div class="capability-list">
+        <div class="cap-line">Performance anti-patterns — SELECT inside loops, SELECT *, missing WHERE clauses, inefficient MOVE-CORRESPONDING in hot paths</div>
+        <div class="cap-line">Logic errors — missing sy-subrc checks, wrong CLEAR between iterations, missing COMMIT/ROLLBACK in update programs</div>
+        <div class="cap-line">Security vulnerabilities — dynamic WHERE from user input, missing AUTHORITY-CHECK, hardcoded credentials</div>
+        <div class="cap-line">S/4HANA compliance — deprecated ABAP syntax, direct DB table access bypassing CDS views, obsolete FMs with S/4 equivalents</div>
+        <div class="cap-line">Code quality — methods over 100 lines, missing ABAP Doc, no Unit Test structure</div>
+      </div>
+      <div class="modal-label" style="margin-top:20px;">Output</div>
+      <div class="modal-metric">
+        <div class="metric-box"><div class="metric-val">P1–P4</div><div class="metric-lbl">Severity classification</div></div>
+        <div class="metric-box"><div class="metric-val">~5 min</div><div class="metric-lbl">Per object reviewed</div></div>
+        <div class="metric-box"><div class="metric-val">APPROVE / REJECT</div><div class="metric-lbl">Transport decision</div></div>
+      </div>
+      <div class="outcome-box">Governance impact: zero P1 ATC findings now enforced as a hard transport gate. Accenture developers receive findings at their desk — not at UAT entry, where remediation costs 10× more.</div>
+    `
+  },
+  impact: {
+    title: "AI-Driven Test Scope Engine — Architecture",
+    body: `
+      <div class="modal-desc">Designed to replace Tricentis Live Compare Smart Impact — which failed two PoC phases due to product limitations with custom objects. This three-layer architecture reads ABAP code semantics directly, so any object (standard or custom) gets correctly classified without relying on pre-built SAP mappings.</div>
+      <div class="modal-label">Three layers</div>
+      <div class="capability-list">
+        <div class="cap-line"><strong style="color:#E8EDF5">Layer 1 — Object extraction (≈1 min):</strong> PyRFC connects to STMS/CTS, extracts all changed objects from the transport, runs ABAP where-used for dependency mapping</div>
+        <div class="cap-line"><strong style="color:#E8EDF5">Layer 2 — AI classification (≈2 min):</strong> Claude API reads ABAP source code, classifies each object by business process and transaction code. Works for Z* and /ORG/ custom objects — the gap where all commercial tools fail</div>
+        <div class="cap-line"><strong style="color:#E8EDF5">Layer 3 — Test recommendation (instant):</strong> Queries Tosca test repository, returns curated test list with confidence scores. Typically 12–15 targeted cases from a library of 400+</div>
+      </div>
+      <div class="modal-label" style="margin-top:20px;">Accuracy over time</div>
+      <div class="modal-metric">
+        <div class="metric-box"><div class="metric-val">~55%</div><div class="metric-lbl">Baseline (same as commercial)</div></div>
+        <div class="metric-box"><div class="metric-val">~80%</div><div class="metric-lbl">Release 10 (feedback loop)</div></div>
+        <div class="metric-box"><div class="metric-val">~90%+</div><div class="metric-lbl">Release 15+ (calibrated)</div></div>
+      </div>
+      <div class="outcome-box">Commercial replacement: replaces a $300K+ annual tooling contract. Annual AI API cost at 50 transports/week: under $5K AUD. Each release cycle feeds the learning loop — institutional knowledge becomes a system asset, not a person-dependency.</div>
+    `
+  },
+  vendor: {
+    title: "Vendor Contract Decision Framework",
+    body: `
+      <div class="modal-desc">A structured methodology for evaluating underperforming technology contracts at the executive level. Developed for a real decision on a major S/4HANA program — a $300K+ commercial tooling contract that failed to deliver on its core value proposition after two structured PoC phases.</div>
+      <div class="modal-label">Framework structure</div>
+      <div class="capability-list">
+        <div class="cap-line">Executive decision brief — one-slide summary of problem statement, current status, recommendation, and next steps. Decision Required call-out visible to senior leadership</div>
+        <div class="cap-line">Capability assessment table — each contracted capability assessed against purpose, verdict (Approved/Marginal/Failed), key findings with root cause, and value delivered</div>
+        <div class="cap-line">Phase-based evidence — PoC phases documented with specific failure modes, vendor response, and conclusion. Root cause classification (product limitation vs configuration vs implementation)</div>
+        <div class="cap-line">Alternative tooling roadmap — for each failed capability, a replacement option with build effort, cost comparison, and implementation timeline</div>
+      </div>
+      <div class="modal-label" style="margin-top:20px;">Key principles</div>
+      <div class="capability-list">
+        <div class="cap-line">Root cause must be confirmed as architectural before recommending exit — configuration issues are fixable, product limitations are not</div>
+        <div class="cap-line">Separating components: retain what works (test automation), exit what doesn't (impact analysis)</div>
+        <div class="cap-line">Replacement options presented with effort and cost so leadership approves alternatives, not just an exit</div>
+      </div>
+      <div class="outcome-box">Outcome: executive approval obtained for contract cancellation and alternative tooling evaluation. Presentation to GM level with no follow-up questions on the recommendation — the framework answered them in advance.</div>
+    `
+  },
+  reporting: {
+    title: "Platform Engineering Reporting System",
+    body: `
+      <div class="modal-desc">A weekly executive status pack architecture for a multi-workstream SAP platform operation. Designed to give a GM-level consumer the complete picture of platform health, cost, and risk in under 5 minutes — with a clear signal of what needs a decision, what is FYI, and what is being escalated.</div>
+      <div class="modal-label">Five-slide architecture</div>
+      <div class="capability-list">
+        <div class="cap-line"><strong style="color:#E8EDF5">Cover + RAG summary:</strong> Workstream status (R/A/G) at a glance. Week/date stamped. No narrative — signals before words</div>
+        <div class="cap-line"><strong style="color:#E8EDF5">Key discussion points:</strong> Tagged cards (Decision Required / Escalation / FYI). Ordered by urgency. No activity log — only what the executive needs to act on this week</div>
+        <div class="cap-line"><strong style="color:#E8EDF5">Application health dashboard:</strong> Version, support status, vendor maintenance expiry, RAG, and notes per application. Flags end-of-maintenance versions before they become incidents</div>
+        <div class="cap-line"><strong style="color:#E8EDF5">Commercials:</strong> Cloud consumption (MTD vs budget, WoW trend, anomalies), BTP credit usage, vendor invoices and quotes with approval status</div>
+        <div class="cap-line"><strong style="color:#E8EDF5">Risks &amp; Issues Register:</strong> Three swim lanes (BAU / Project / Transition). New items flagged. Severity coloured Critical/High/Medium. Owner and action per item</div>
+      </div>
+      <div class="modal-label" style="margin-top:20px;">Design principles</div>
+      <div class="capability-list">
+        <div class="cap-line">Discussion points before application health — puts decisions front and centre for a GM who skims</div>
+        <div class="cap-line">No activity update slide — activity logs make you look busy, not strategic</div>
+        <div class="cap-line">Commercials as standalone slide — cost visibility signals you're on top of the number your manager cares most about</div>
+      </div>
+      <div class="outcome-box">Built for an organisation with no structured KPI framework — this pack is the first artefact that gives the GM a consistent, comparable view of platform state week over week. Establishes the baseline that makes performance conversations possible.</div>
+    `
+  }
+};
+
+function openModal(key) {
+  const m = modals[key];
+  document.getElementById('modal-title').textContent = m.title;
+  document.getElementById('modal-body').innerHTML = m.body;
+  document.getElementById('modal-overlay').classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal() {
+  document.getElementById('modal-overlay').classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+function closeModalOnOverlay(e) {
+  if (e.target === document.getElementById('modal-overlay')) closeModal();
+}
+
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+</script>
+</body>
+</html>
